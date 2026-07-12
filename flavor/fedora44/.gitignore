@@ -1,2 +1,5 @@
 # bootstrapped build-appliance tarball (see flavor/bootstrap/); host externally
 build-appliance.tar.zst
+repo
+# dnf's metadata/log/state cache, redirected here by import_snapshot.py download
+.dnf-cache

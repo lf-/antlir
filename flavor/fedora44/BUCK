@@ -10,24 +10,62 @@ flavor(
     # snapshot in as the default repo set (that cell is huge, x86_64-only, and
     # absent in OSS -- see BUGS.md #5). Images pull Fedora repos explicitly via
     # `dnf_additional_repos` (live mirror or a local snapshot).
-    default_dnf_repo_set = "//antlir/antlir2/flavor:empty-repo-set",
+    # Local Fedora 44 aarch64 snapshot (see repo/README.md). antlir2 dnf is
+    # fully offline, so the BA's dnf stack + closure must be materialized as
+    # in-repo rpm() targets rather than pulled live.
+    default_dnf_repo_set = "fedora44//:repos",
     default_dnf_versionlock = "//antlir/antlir2/package_managers/dnf/build_appliance:empty-dnf-versionlock.json",
     visibility = ["PUBLIC"],
 )
 
-# The build appliance tarball is bootstrapped locally by
-# flavor/bootstrap/build_appliance.py (there is no Meta S3 artifact for Fedora,
-# let alone aarch64). It is .gitignore'd; drop the produced tarball here, or
-# repoint this at wherever you host it (an `http_file` works too). See
-# flavor/bootstrap/README.md.
-export_file(
+_S3_BUCKET = "https://axq7lorgquqs.objectstorage.ca-montreal-1.oci.customer-oci.com/n/axq7lorgquqs/b/fedora.jade.fyi/o/"
+
+# The build appliance tarball is built on a Fedora with
+# flavor/bootstrap/build_appliance.py.
+alias(
     name = "build-appliance.tar.zst",
-    src = "build-appliance.tar.zst",
+    actual = select({
+        "ovr_config//cpu:arm64": ":build-appliance-aarch64",
+        "ovr_config//cpu:x86_64": ":build-appliance-x86_64",
+    }),
+)
+
+http_file(
+    name = "build-appliance-x86_64",
+    urls = [_S3_BUCKET + "bootstrap/fedora44_ba_x86_64-20260719.tar.zst"],
+    sha256 = "c073000fcf78e30c7b00dbbb08137f2ce037ee381817076c9afad21c402fff20",
+    size_bytes = 49774854,
+)
+
+http_file(
+    name = "build-appliance-aarch64",
+    urls = [_S3_BUCKET + "bootstrap/fedora44_ba_aarch64-20260719.tar.zst"],
+    sha256 = "74aab0a259a919efdfcf41a16b08daca9532640284f127aba8c10ede87c4d54e",
+    size_bytes = 46070977,
+)
+
+# BuildApplianceInfo.dir must be a *plain directory* rootfs, not the tarball
+# (the isolation bind-mounts it as the root layer -> a file gives ENOTDIR). Per
+# the provider docs, ownership/fs-metadata don't matter for a BA, so a plain
+# unprivileged `tar x` is fine (the seed tarball contains no device nodes).
+buck_genrule(
+    name = "build-appliance.rootfs",
+    out = "rootfs",
+    cmd = """
+        mkdir -p "$OUT"
+        zstd -dc $(location :build-appliance.tar.zst) | tar -C "$OUT" -xf -
+        # antlir2 hardcodes /usr/libexec/platform-python (a CentOS/RHEL-ism) as
+        # the in-BA interpreter for e.g. the rpm fact-finder
+        # (antlir2_facts/update_db.rs). Fedora ships /usr/bin/python3 but never
+        # creates that symlink, so provide it here to match CentOS BAs.
+        mkdir -p "$OUT/usr/libexec"
+        ln -sf ../bin/python3 "$OUT/usr/libexec/platform-python"
+    """,
 )
 
 build_appliance(
     name = "build-appliance.prebuilt",
-    src = ":build-appliance.tar.zst",
+    src = ":build-appliance.rootfs",
     visibility = [
         "antlir//antlir/antlir2/flavor:none",
     ],
@@ -42,6 +80,14 @@ image.layer(
     # build_appliance above (the bootstrapped seed) breaks the would-be cycle,
     # exactly as centos9's own BA layer relies on an explicit prebuilt.
     default_os = "fedora44",
+    # antlir2's default `btrfs` working format needs a btrfs filesystem under
+    # antlir2-out/subvols. This host now has a btrfs kernel; `setup.sh
+    # step_btrfs` mounts a loopback btrfs there (with user_subvol_rm_allowed),
+    # and rootless subvolume create/delete works in that userns. If you ever run
+    # on a btrfs-less host, set `working_format = "cad-stack"` here instead — it
+    # materializes into a plain TempDir + content-addressed object store (the
+    # antlir2_btrfs Subvolume::create plain-dir fallback covers the final
+    # materialize-to-subvol step there too).
     features = [
         "//antlir/antlir2/build_appliance:features",
     ],

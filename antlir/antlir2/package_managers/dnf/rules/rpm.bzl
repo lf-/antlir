@@ -22,7 +22,7 @@ RpmInfo = provider(
         "pkgid",  # checksum (sha256 or sha1, usually sha256)
         "raw_rpm",  # .rpm file artifact
         "xml",  # combined xml chunks
-    ]
+    ],
 )
 
 def _make_xml(ctx: AnalysisContext, rpm: Artifact, href: str) -> Artifact:
@@ -48,7 +48,17 @@ def _impl(ctx: AnalysisContext) -> list[Provider]:
         if not ctx.attrs.url:
             fail("'rpm' or 'url' required")
         rpm_file = ctx.actions.declare_output("rpm.rpm", has_content_based_path = False)
-        ctx.actions.download_file(rpm_file, ctx.attrs.url, sha256 = ctx.attrs.sha256, sha1 = ctx.attrs.sha1)
+
+        # Passing size_bytes lets buck2 form the full CAS digest (hash:size)
+        # without first issuing a HEAD to discover Content-Length -- worth one
+        # saved round-trip per rpm on a cold graph.
+        ctx.actions.download_file(
+            rpm_file,
+            ctx.attrs.url,
+            sha256 = ctx.attrs.sha256,
+            sha1 = ctx.attrs.sha1,
+            size_bytes = ctx.attrs.size_bytes,
+        )
 
     # TODO: move nevra directly into attrs.string()
     nevra = "{}-{}:{}-{}.{}".format(
@@ -74,8 +84,13 @@ def _impl(ctx: AnalysisContext) -> list[Provider]:
     )
 
 def common_impl(
-    ctx: AnalysisContext, name: str, nevra: str, rpm: Artifact, xml: Artifact, pkgid: str, reflink_flavors: dict[str, Dependency]
-) -> list[Provider]:
+        ctx: AnalysisContext,
+        name: str,
+        nevra: str,
+        rpm: Artifact,
+        xml: Artifact,
+        pkgid: str,
+        reflink_flavors: dict[str, Dependency]) -> list[Provider]:
     # Produce an rpm2extents artifact for each flavor. This is tied specifically
     # to the version of `rpm` being used in the build appliance, and should be
     # broadly compatible in practice, especially within os versions (eg if we
@@ -126,6 +141,10 @@ _rpm = rule(
         "rpm_name": attrs.string(),
         "sha1": attrs.option(attrs.string(), default = None),
         "sha256": attrs.option(attrs.string(), default = None),
+        "size_bytes": attrs.option(
+            attrs.int(doc = "size of the .rpm; lets buck2 skip a HEAD when fetching via 'url'"),
+            default = None,
+        ),
         "url": attrs.option(attrs.string(), default = None),
         "version": attrs.string(),
         "xml": attrs.option(attrs.source(doc = "all xml chunks"), default = None),

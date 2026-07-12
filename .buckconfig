@@ -3,6 +3,7 @@
     prelude = prelude
     toolchains = toolchains
     none = none
+    fedora44 = flavor/fedora44/repo
 
 [cell_aliases]
     config = prelude
@@ -16,7 +17,8 @@
     prelude = bundled
 
 [parser]
-    target_platform_detector_spec = target:antlir//...->prelude//platforms:default
+    target_platform_detector_spec = target:antlir//...->prelude//platforms:default \
+        target:fedora44//...->prelude//platforms:default
 
 [project]
     ignore = antlir2-out, .git, .sl, .claude-persist

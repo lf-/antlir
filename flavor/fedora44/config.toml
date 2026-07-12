@@ -1,0 +1,38 @@
+base_url = "https://axq7lorgquqs.objectstorage.ca-montreal-1.oci.customer-oci.com/n/axq7lorgquqs/b/fedora.jade.fyi/o/"
+
+[packages]
+include = [
+    # keep-sorted start
+    "bash",
+    "btrfs-progs",
+    "ca-certificates",
+    "cargo",
+    "clang",
+    "coreutils",
+    "dnf",
+    "gh",
+    "git",
+    "glibc-minimal-langpack",
+    "golang",
+    "lld",
+    "node",
+    "npm",
+    "python3",
+    "python3-dnf",
+    "python3-hawkey",
+    "python3-libdnf",
+    "python3-rpm",
+    "rpm",
+    "rust",
+    "util-linux",
+    "zstd",
+    # keep-sorted end
+]
+
+[packages.aarch64]
+include = [
+    "qemu-user-static-x86",
+]
+
+[packages.x86_64]
+include = []
