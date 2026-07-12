@@ -1,0 +1,6 @@
+# Pre-generated bindgen output for libsqlite3-sys (see fixups.toml).
+filegroup(
+    name = "out_dir",
+    srcs = ["bindgen.rs"],
+    visibility = ["//third-party/rust/..."],
+)

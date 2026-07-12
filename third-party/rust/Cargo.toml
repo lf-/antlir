@@ -1,0 +1,323 @@
+[workspace]
+
+[package]
+name = "rust-third-party"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "top"
+path = "top/main.rs"
+
+[dependencies]
+addr2line = { version = "=0.24.2", features = ["cpp_demangle", "fallible-iterator", "loader", "rustc-demangle", "smallvec", "std"], default-features = true }
+adler = { version = "=1.0.2", features = [], default-features = false }
+ahash = { version = "=0.8.12", features = ["getrandom", "runtime-rng"], default-features = false }
+aho-corasick = { version = "=1.1.3", features = ["perf-literal", "std"], default-features = true }
+allocative = { git = "https://github.com/facebook/starlark-rust.git", rev = "3ee0405eb6c4eb3a9c18c05a4a01c71fa43eb258" }
+allocator-api2 = { version = "=0.2.21", features = ["alloc", "std"], default-features = true }
+annotate-snippets = { version = "=0.9.2", features = ["color", "yansi-term"], default-features = true }
+ansi_term = { version = "=0.12.1", features = [], default-features = false }
+anstream = { version = "=0.6.19", features = ["auto", "wincon"], default-features = true }
+anstyle = { version = "=1.0.11", features = ["std"], default-features = true }
+anyhow = { version = "=1.0.98", features = ["std"], default-features = true }
+arc-swap = { version = "=1.7.1", features = ["weak"], default-features = false }
+argv = { version = "=0.1.12", features = [], default-features = false }
+arrayref = { version = "=0.3.9", features = [], default-features = false }
+arrayvec = { version = "=0.7.6", features = [], default-features = false }
+async-compression = { version = "=0.4.25", features = ["brotli", "bzip2", "deflate", "flate2", "futures-io", "gzip", "libzstd", "tokio", "zlib", "zstd", "zstd-safe", "zstdmt"], default-features = false }
+async-trait = { version = "=0.1.88", features = [], default-features = false }
+atomic = { version = "=0.5.3", features = ["fallback"], default-features = true }  # multiple versions in graph: 0.5.3, 0.6.0 (alias -> 0.5.3)
+backtrace = { version = "=0.3.75", features = ["std"], default-features = true }
+base64 = { version = "=0.22.1", features = ["alloc", "std"], default-features = true }  # multiple versions in graph: 0.21.7, 0.22.1 (alias -> 0.22.1)
+bindgen = { version = "=0.71.1", features = ["logging", "prettyplease", "runtime"], default-features = false }  # runtime (dynamic dlopen of libclang.so.*) NOT static: sandbox has libclang.so.22.1 (clang-libs) but no libclang.a. bindgen/runtime -> clang-sys/runtime -> clang_sys::load().
+bit-set = { version = "=0.5.3", features = ["std"], default-features = true }
+bit-vec = { version = "=0.6.3", features = ["std"], default-features = true }
+bitflags = { version = "=2.9.1", features = ["std"], default-features = false }  # multiple versions in graph: 1.3.2, 2.9.1 (alias -> 2.9.1)
+blake3 = { version = "=1.6.1", features = ["mmap", "rayon", "std", "traits-preview"], default-features = true }
+bon = { version = "=3.6.4", features = ["alloc", "std"], default-features = true }
+bstr = { version = "=1.12.0", features = ["alloc", "serde", "std", "unicode"], default-features = true }
+buck-resources = { version = "=1.0.0", features = [], default-features = false }
+bufsize = { version = "=1.0.10", features = ["std"], default-features = true }
+bumpalo = { version = "=3.18.1", features = ["allocator_api", "collections"], default-features = true }
+bytemuck = { version = "=1.23.1", features = ["bytemuck_derive", "const_zeroed", "derive", "min_const_generics", "nightly_portable_simd", "nightly_stdsimd"], default-features = false }
+byteorder = { version = "=1.5.0", features = ["std"], default-features = true }
+bytes = { version = "=1.10.1", features = ["serde", "std"], default-features = true }
+bytesize = { version = "=2.0.1", features = ["std"], default-features = true }
+bzip2 = { version = "=0.5.2", features = [], default-features = true }  # multiple versions in graph: 0.5.2, 0.6.0 (alias -> 0.5.2)
+cap-std = { version = "=3.4.4", features = [], default-features = true }
+cfg-if = { version = "=0.1.10", features = [], default-features = false }  # multiple versions in graph: 0.1.10, 1.0.1 (alias -> 0.1.10)
+chrono = { version = "=0.4.41", features = ["alloc", "android-tzdata", "clock", "iana-time-zone", "js-sys", "now", "oldtime", "serde", "std", "wasm-bindgen", "wasmbind", "winapi", "windows-link"], default-features = true }
+chrono-tz = { version = "=0.8.6", features = ["std"], default-features = true }  # multiple versions in graph: 0.8.6, 0.9.0 (alias -> 0.8.6)
+clang-sys = { version = "=1.8.1", features = ["clang_10_0", "clang_11_0", "clang_12_0", "clang_3_5", "clang_3_6", "clang_3_7", "clang_3_8", "clang_3_9", "clang_4_0", "clang_5_0", "clang_6_0", "clang_7_0", "clang_8_0", "clang_9_0"], default-features = false }
+clap = { version = "=4.5.40", features = ["color", "derive", "env", "error-context", "help", "std", "string", "suggestions", "unicode", "usage", "wrap_help"], default-features = true }  # multiple versions in graph: 2.34.0, 4.5.40 (alias -> 4.5.40)
+clap_complete = { version = "=4.5.54", features = [], default-features = true }
+clap_mangen = { version = "=0.2.27", features = [], default-features = true }
+close-err = { version = "=1.0.2", features = [], default-features = false }
+codespan-reporting = { version = "=0.11.1", features = [], default-features = false }
+colored = { version = "=2.2.0", features = [], default-features = false }
+compact_str = { version = "=0.8.1", features = ["std"], default-features = true }
+configparser = { version = "=3.1.0", features = ["indexmap"], default-features = false }
+console = { version = "=0.15.11", features = ["ansi-parsing", "unicode-width"], default-features = true }
+constant_time_eq = { version = "=0.2.6", features = [], default-features = false }  # multiple versions in graph: 0.2.6, 0.3.1 (alias -> 0.2.6)
+convert_case = { version = "=0.6.0", features = [], default-features = false }
+cookie = { version = "=0.16.2", features = [], default-features = false }  # multiple versions in graph: 0.16.2, 0.17.0 (alias -> 0.16.2)
+crc = { version = "=3.3.0", features = [], default-features = false }
+crc32c-hw = { version = "=0.1.3", features = [], default-features = false }
+crc32fast = { version = "=1.4.2", features = ["std"], default-features = true }
+crossbeam = { version = "=0.8.4", features = ["alloc", "crossbeam-channel", "crossbeam-deque", "crossbeam-epoch", "crossbeam-queue", "std"], default-features = true }
+crossbeam-channel = { version = "=0.5.15", features = ["std"], default-features = true }
+crossbeam-queue = { version = "=0.3.12", features = ["alloc", "std"], default-features = true }
+ctor = { version = "=0.1.26", features = [], default-features = false }
+ctrlc = { version = "=3.4.7", features = ["termination"], default-features = false }
+cxx = { version = "=1.0.158", features = ["alloc", "std"], default-features = true }
+darling = { version = "=0.14.4", features = ["suggestions"], default-features = true }  # multiple versions in graph: 0.10.2, 0.13.4, 0.14.4, 0.20.11 (alias -> 0.14.4)
+dashmap = { version = "=5.5.3", features = ["rayon", "serde"], default-features = false }
+debugserver-types = { version = "=0.5.0", features = [], default-features = false }
+derivative = { version = "=2.2.0", features = [], default-features = false }
+derive_builder = { version = "=0.20.2", features = ["alloc", "std"], default-features = true }  # multiple versions in graph: 0.20.2, 0.9.0 (alias -> 0.20.2)
+derive_builder-09 = { package = "derive_builder", version = "=0.9.0", features = [], default-features = false }
+derive_more = { version = "=1.0.0", features = ["add", "add_assign", "as_ref", "constructor", "debug", "deref", "deref_mut", "display", "error", "from", "from_str", "full", "index", "index_mut", "into", "into_iterator", "is_variant", "mul", "mul_assign", "not", "std", "sum", "try_from", "try_into", "try_unwrap", "unwrap"], default-features = true }
+diff = { version = "=0.1.13", features = [], default-features = false }
+digest = { version = "=0.10.7", features = ["alloc", "block-buffer", "core-api", "mac", "std", "subtle"], default-features = true }
+displaydoc = { version = "=0.2.5", features = ["std"], default-features = true }
+dunce = { version = "=1.0.5", features = [], default-features = false }
+either = { version = "=1.15.0", features = ["std", "use_std"], default-features = true }
+encoding_rs = { version = "=0.8.35", features = ["alloc"], default-features = true }
+env_filter = { version = "=0.1.3", features = ["regex"], default-features = true }
+env_logger = { version = "=0.11.8", features = ["auto-color", "color", "humantime", "regex"], default-features = true }  # multiple versions in graph: 0.11.8, 0.8.4 (alias -> 0.11.8)
+equivalent = { version = "=1.0.2", features = [], default-features = false }
+erased-serde = { version = "=0.3.31", features = ["std"], default-features = true }  # multiple versions in graph: 0.3.31, 0.4.6 (alias -> 0.3.31)
+fallible-iterator = { version = "=0.3.0", features = ["alloc", "std"], default-features = true }
+fallible-streaming-iterator = { version = "=0.1.9", features = [], default-features = false }
+fastrand = { version = "=2.3.0", features = ["alloc", "std"], default-features = true }
+fbinit = { version = "=0.2.0", features = [], default-features = false }
+fbinit-tokio = { version = "=0.1.0", features = [], default-features = false }
+fbthrift = { git = "https://github.com/facebook/fbthrift.git", rev = "d5f7f7223afa0a7bcdb12fc9380e42a804595eab" }
+filetime = { version = "=0.2.25", features = [], default-features = false }
+flate2 = { version = "=1.1.2", features = ["any_impl", "miniz_oxide", "rust_backend"], default-features = true }
+fnv = { version = "=1.0.7", features = ["std"], default-features = true }
+foreign-types = { version = "=0.3.2", features = [], default-features = false }
+foreign-types-shared = { version = "=0.1.1", features = [], default-features = false }
+form_urlencoded = { version = "=1.2.1", features = ["alloc", "std"], default-features = true }
+futures = { version = "=0.3.31", features = ["alloc", "async-await", "compat", "executor", "futures-executor", "std"], default-features = true }  # multiple versions in graph: 0.1.31, 0.3.31 (alias -> 0.3.31)
+futures-channel = { version = "=0.3.31", features = ["alloc", "futures-sink", "sink", "std"], default-features = true }
+futures-core = { version = "=0.3.31", features = ["alloc", "std"], default-features = true }
+futures-executor = { version = "=0.3.31", features = ["std"], default-features = true }
+futures-util = { version = "=0.3.31", features = ["alloc", "async-await", "async-await-macro", "channel", "compat", "futures-channel", "futures-io", "futures-macro", "futures-sink", "futures_01", "io", "memchr", "sink", "slab", "std"], default-features = true }
+fxhash = { version = "=0.2.1", features = [], default-features = false }
+generic-array = { version = "=0.14.7", features = ["more_lengths"], default-features = false }
+getrandom = { version = "=0.3.3", features = ["std"], default-features = false }  # multiple versions in graph: 0.2.16, 0.3.3 (alias -> 0.3.3)
+getset = { version = "=0.1.6", features = [], default-features = false }
+ghost = { version = "=0.1.19", features = [], default-features = false }
+gimli = { version = "=0.31.1", features = ["endian-reader", "fallible-iterator", "read", "read-all", "read-core", "std", "write"], default-features = true }
+glob = { version = "=0.3.2", features = [], default-features = false }
+globset = { version = "=0.4.16", features = ["log", "serde", "serde1"], default-features = true }
+globwalk = { version = "=0.8.1", features = [], default-features = false }  # multiple versions in graph: 0.8.1, 0.9.1 (alias -> 0.8.1)
+goblin = { version = "=0.8.2", features = ["alloc", "elf32", "elf64", "endian_fd", "log"], default-features = false }
+gpt = { version = "=4.1.0", features = [], default-features = false }
+handlebars = { version = "=5.1.2", features = ["dir_source", "no_logging", "walkdir"], default-features = true }
+hashbrown = { version = "=0.14.5", features = ["ahash", "allocator-api2", "inline-more", "raw"], default-features = true }  # multiple versions in graph: 0.14.5, 0.15.4 (alias -> 0.14.5)  # nightly stripped (min_specialization on Copy; stable rustc rejects)
+hashlink = { version = "=0.9.1", features = [], default-features = false }  # multiple versions in graph: 0.10.0, 0.9.1 (alias -> 0.9.1)
+heck = { version = "=0.3.3", features = [], default-features = false }  # multiple versions in graph: 0.3.3, 0.5.0 (alias -> 0.3.3)
+hex = { version = "=0.4.3", features = ["alloc", "std"], default-features = true }
+hostname = { version = "=0.3.1", features = [], default-features = true }
+http = { version = "=0.2.12", features = [], default-features = false }
+http-body = { version = "=0.4.6", features = [], default-features = false }
+httparse = { version = "=1.10.1", features = ["std"], default-features = true }
+humantime = { version = "=2.2.0", features = [], default-features = false }
+hyper-rustls = { version = "=0.24.2", features = ["acceptor", "http1", "http2", "log", "logging", "native-tokio", "rustls-native-certs", "tls12", "tokio-runtime"], default-features = true }
+hyper-tls = { version = "=0.5.0", features = [], default-features = false }
+ignore = { version = "=0.4.23", features = [], default-features = false }
+indenter = { version = "=0.3.3", features = [], default-features = true }
+indexmap = { version = "=2.9.0", features = ["arbitrary", "rayon", "serde", "std"], default-features = true }
+indoc = { version = "=2.0.6", features = [], default-features = false }
+inventory = { version = "=0.3.20", features = [], default-features = false }
+itertools = { version = "=0.14.0", features = [], default-features = false }  # multiple versions in graph: 0.10.5, 0.12.1, 0.13.0, 0.14.0 (alias -> 0.14.0)
+jwalk = { version = "=0.6.2", features = [], default-features = false }
+lalrpop = { version = "=0.19.12", features = ["lexer", "pico-args"], default-features = true }
+lalrpop-util = { version = "=0.19.12", features = ["lexer", "regex", "std"], default-features = true }
+lazy_static = { version = "=1.5.0", features = ["spin", "spin_no_std"], default-features = false }
+libc = { version = "=0.2.174", features = ["extra_traits", "std"], default-features = true }
+libloading = { version = "=0.6.7", features = [], default-features = false }
+libm = { version = "=0.2.15", features = ["arch"], default-features = true }
+libz-sys = { version = "=1.1.22", features = ["libc", "stock-zlib"], default-features = true }
+linux-raw-sys = { version = "=0.6.5", features = ["errno", "general", "std"], default-features = true }  # multiple versions in graph: 0.4.15, 0.6.5, 0.9.4 (alias -> 0.6.5)
+lock_api = { version = "=0.4.13", features = ["atomic_usize"], default-features = true }
+log = { version = "=0.4.27", features = ["kv", "kv_unstable", "std", "value-bag"], default-features = false }  # multiple versions in graph: 0.3.9, 0.4.27 (alias -> 0.4.27)
+logos = { version = "=0.12.1", features = ["export_derive", "logos-derive", "std"], default-features = true }
+lsp-types = { version = "=0.94.1", features = [], default-features = true }
+maplit = { version = "=1.0.2", features = [], default-features = false }
+maybe-owned = { version = "=0.3.4", features = [], default-features = false }
+md-5 = { version = "=0.10.6", features = ["std"], default-features = true }
+memchr = { version = "=2.7.5", features = ["alloc", "std"], default-features = true }
+memfd = { version = "=0.6.4", features = [], default-features = false }
+memmap2 = { version = "=0.9.5", features = [], default-features = false }
+memoffset = { version = "=0.6.5", features = [], default-features = true }  # multiple versions in graph: 0.6.5, 0.9.1 (alias -> 0.6.5)
+mime = { version = "=0.3.17", features = [], default-features = false }
+mime_guess = { version = "=2.0.5", features = ["rev-mappings"], default-features = true }
+miniz_oxide = { version = "=0.7.4", features = ["with-alloc"], default-features = true }  # multiple versions in graph: 0.7.4, 0.8.9 (alias -> 0.7.4)
+mio = { version = "=1.0.4", features = ["log", "net", "os-ext", "os-poll"], default-features = true }
+mockall = { version = "=0.13.1", features = [], default-features = false }
+mustache = { version = "=0.9.0", features = [], default-features = false }
+native-tls = { version = "=0.2.14", features = [], default-features = false }
+nix = { version = "=0.30.1", features = ["dir", "event", "feature", "fs", "hostname", "inotify", "ioctl", "mman", "mount", "net", "poll", "process", "ptrace", "reboot", "resource", "sched", "signal", "socket", "term", "time", "uio", "user", "zerocopy"], default-features = true }  # bumped 0.29.0 -> 0.30.1: antlir2_btrfs needs Dir: AsFd (added in 0.30). memoffset feature removed in 0.30. Other versions 0.25.1/0.28.0 remain as transitive deps.
+nom = { version = "=8.0.0", features = ["alloc", "std"], default-features = true }  # multiple versions in graph: 7.1.3, 8.0.0 (alias -> 8.0.0)
+nom-language = { version = "=0.1.0", features = [], default-features = false }
+nonempty = { version = "=0.11.0", features = ["std"], default-features = true }
+nu-ansi-term = { version = "=0.49.0", features = [], default-features = false }  # multiple versions in graph: 0.46.0, 0.49.0 (alias -> 0.49.0)
+num = { version = "=0.2.1", features = ["num-bigint", "std"], default-features = true }
+num-bigint = { version = "=0.4.6", features = ["rand", "std"], default-features = true }  # multiple versions in graph: 0.2.6, 0.4.6 (alias -> 0.4.6)
+num-derive = { version = "=0.4.2", features = [], default-features = false }
+num-integer = { version = "=0.1.46", features = ["i128", "std"], default-features = true }
+num-rational = { version = "=0.4.2", features = [], default-features = false }  # multiple versions in graph: 0.2.4, 0.4.2 (alias -> 0.4.2)
+num-traits = { version = "=0.2.19", features = ["i128", "std"], default-features = true }
+num_cpus = { version = "=1.17.0", features = [], default-features = false }
+object = { version = "=0.36.7", features = ["archive", "coff", "compression", "elf", "macho", "pe", "read", "read_core", "std", "unaligned", "write", "write_core", "write_std", "xcoff"], default-features = true }
+oci-spec = { version = "=0.7.1", features = ["distribution", "image", "runtime"], default-features = true }
+once_cell = { version = "=1.21.3", features = ["alloc", "race", "std"], default-features = true }
+openat2 = { version = "=0.1.2", features = [], default-features = false }
+openssl = { version = "=0.10.73", features = [], default-features = true }
+openssl-sys = { version = "=0.9.109", features = [], default-features = false }
+ordered-float = { version = "=3.9.2", features = ["serde", "std"], default-features = true }
+panic-message = { version = "=0.3.0", features = [], default-features = false }
+parking_lot = { version = "=0.12.4", features = ["send_guard"], default-features = true }
+paste = { version = "=1.0.15", features = [], default-features = false }
+percent-encoding = { version = "=2.3.1", features = ["alloc", "std"], default-features = true }
+perf-event-open-sys = { version = "=5.0.0", features = [], default-features = false }
+pest = { version = "=2.8.1", features = ["memchr", "std"], default-features = true }
+pest_derive = { version = "=2.8.1", features = ["std"], default-features = true }
+pest_generator = { version = "=2.8.1", features = ["std"], default-features = true }
+petgraph = { version = "=0.6.5", features = ["graphmap", "matrix_graph", "serde", "serde-1", "serde_derive", "stable_graph"], default-features = true }
+phf = { version = "=0.11.3", features = ["macros", "phf_macros", "std"], default-features = true }
+phf_codegen = { version = "=0.11.3", features = [], default-features = false }
+pin-utils = { version = "=0.1.0", features = [], default-features = false }
+plain = { version = "=0.2.3", features = [], default-features = false }
+predicates = { version = "=1.0.8", features = ["difference", "float-cmp", "normalize-line-endings", "regex"], default-features = true }  # multiple versions in graph: 1.0.8, 3.1.3 (alias -> 1.0.8)
+pretty_assertions = { version = "=1.4.1", features = ["alloc"], default-features = false }
+prettyplease = { version = "=0.2.34", features = ["verbatim"], default-features = false }
+proc-macro-error = { version = "=1.0.4", features = ["syn", "syn-error"], default-features = true }
+proc-macro-error2 = { version = "=2.0.1", features = ["syn-error"], default-features = true }
+proc-macro2 = { version = "=1.0.95", features = ["proc-macro", "span-locations"], default-features = true }
+proc-mounts = { version = "=0.2.4", features = [], default-features = false }
+prost = { version = "=0.12.6", features = ["derive", "prost-derive", "std"], default-features = false }
+prost-derive = { version = "=0.12.6", features = [], default-features = false }
+prost-types = { version = "=0.12.6", features = ["std"], default-features = true }
+pyo3 = { version = "=0.24.2", features = ["anyhow", "indoc", "macros", "pyo3-macros", "unindent"], default-features = true }
+quick-xml = { version = "=0.37.5", features = ["serialize"], default-features = true }  # bumped 0.23.1 -> 0.37.5: makerepo.rs (first-party) needs the >=0.37 Writer API where write_text_content/write_empty/write_inner_content return io::Result (it does map_err(io::Error::other)). The OSS reindeer snapshot shipped 0.23.1, which never actually built makerepo (0.31's write_inner_content still required E: From<quick_xml::Error>). `serde` feature folded into `serialize`.
+quickcheck = { version = "=1.0.3", features = ["env_logger", "log", "regex", "use_logging"], default-features = true }
+quote = { version = "=1.0.40", features = ["proc-macro"], default-features = true }
+radix_trie = { version = "=0.2.1", features = ["serde"], default-features = false }
+rand = { version = "=0.8.5", features = ["alloc", "getrandom", "libc", "rand_chacha", "serde", "serde1", "small_rng", "std", "std_rng"], default-features = true }
+rand_chacha = { version = "=0.3.1", features = ["std"], default-features = false }
+rand_core = { version = "=0.6.4", features = ["alloc", "getrandom", "serde", "serde1", "std"], default-features = false }
+rand_pcg = { version = "=0.3.1", features = ["serde", "serde1"], default-features = false }
+rayon = { version = "=1.10.0", features = [], default-features = false }
+ref-cast = { version = "=1.0.24", features = [], default-features = false }
+regex = { version = "=1.11.1", features = ["perf", "perf-backtrack", "perf-cache", "perf-dfa", "perf-inline", "perf-literal", "perf-onepass", "std", "unicode", "unicode-age", "unicode-bool", "unicode-case", "unicode-gencat", "unicode-perl", "unicode-script", "unicode-segment"], default-features = true }
+regex-automata = { version = "=0.3.9", features = ["alloc", "dfa", "dfa-build", "dfa-onepass", "dfa-search", "hybrid", "meta", "nfa", "nfa-backtrack", "nfa-pikevm", "nfa-thompson", "perf", "perf-inline", "perf-literal", "perf-literal-multisubstring", "perf-literal-substring", "std", "syntax", "unicode", "unicode-age", "unicode-bool", "unicode-case", "unicode-gencat", "unicode-perl", "unicode-script", "unicode-segment", "unicode-word-boundary"], default-features = true }  # multiple versions in graph: 0.1.10, 0.3.9, 0.4.9 (alias -> 0.3.9)
+regex-syntax = { version = "=0.7.5", features = ["std", "unicode", "unicode-age", "unicode-bool", "unicode-case", "unicode-gencat", "unicode-perl", "unicode-script", "unicode-segment"], default-features = true }  # multiple versions in graph: 0.6.29, 0.7.5, 0.8.5 (alias -> 0.7.5)
+relative-path = { version = "=1.9.3", features = ["serde"], default-features = true }
+reqwest = { version = "=0.11.27", features = ["async-compression", "blocking", "cookie_crate", "cookie_store", "cookies", "gzip", "json", "serde_json", "socks", "stream", "tokio-socks", "tokio-util", "wasm-streams", "webpki-roots"], default-features = true }
+retry = { version = "=1.3.1", features = ["rand", "random"], default-features = true }
+rexpect = { version = "=0.5.0", features = [], default-features = false }
+ring = { version = "=0.16.20", features = ["alloc", "dev_urandom_fallback", "once_cell"], default-features = true }  # multiple versions in graph: 0.16.20, 0.17.14 (alias -> 0.16.20)
+rstest = { version = "=0.25.0", features = ["async-timeout"], default-features = false }
+rusqlite = { version = "=0.33.0", features = ["backup", "blob", "bundled", "column_decltype", "functions", "limits", "modern_sqlite", "serde_json"], default-features = false }
+rustc-demangle = { version = "=0.1.25", features = [], default-features = false }
+rustc-hash = { version = "=2.1.1", features = ["std"], default-features = true }
+rustc_version = { version = "=0.4.1", features = [], default-features = false }
+rustix = { version = "=1.1.2", features = ["alloc", "fs", "mm", "mount", "process", "std", "thread"], default-features = true }  # bumped 0.38.44 -> 1.1.2: cad_stack_fs/isolate_unshare need safe Uid::from_raw + new chownat/mount API (rustix 1.x). Dropped 1.x-invalid features libc/libc_errno/libc-extra-traits/use-libc/use-libc-auxv. 0.38.44 remains as transitive dep of memfd/which.
+rustls = { version = "=0.21.12", features = ["dangerous_configuration", "log", "logging", "tls12"], default-features = true }
+rustls-native-certs = { version = "=0.6.3", features = [], default-features = false }
+rustls-pemfile = { version = "=1.0.4", features = [], default-features = false }
+rustls-webpki = { version = "=0.101.7", features = ["alloc", "std"], default-features = true }
+rustversion = { version = "=1.0.21", features = [], default-features = false }
+rustyline = { version = "=14.0.0", features = ["custom-bindings", "derive", "fd-lock", "home", "radix_trie", "rustyline-derive", "with-dirs", "with-file-history"], default-features = true }
+same-file = { version = "=1.0.6", features = [], default-features = false }
+scopeguard = { version = "=1.2.0", features = [], default-features = false }
+scroll = { version = "=0.10.2", features = ["derive", "scroll_derive", "std"], default-features = true }  # multiple versions in graph: 0.10.2, 0.12.0 (alias -> 0.10.2)
+semver = { version = "=1.0.26", features = ["serde", "std"], default-features = true }
+serde = { version = "=1.0.219", features = ["alloc", "derive", "rc", "serde_derive", "std"], default-features = true }
+serde_derive = { version = "=1.0.219", features = [], default-features = true }
+serde_json = { version = "=1.0.140", features = ["float_roundtrip", "raw_value", "std", "unbounded_depth"], default-features = true }
+serde_repr = { version = "=0.1.20", features = [], default-features = false }
+serde_starlark = { version = "=0.1.17", features = [], default-features = false }
+serde_urlencoded = { version = "=0.7.1", features = [], default-features = false }
+serde_with = { version = "=1.14.0", features = ["hex", "json", "macros", "serde_json", "serde_with_macros"], default-features = true }
+sha1 = { version = "=0.10.6", features = ["std"], default-features = true }
+sha2 = { version = "=0.10.9", features = [], default-features = false }
+shell-escape = { version = "=0.1.5", features = [], default-features = false }
+shlex = { version = "=1.3.0", features = ["std"], default-features = true }
+similar = { version = "=2.7.0", features = ["bstr", "bytes", "inline", "text", "unicode", "unicode-segmentation"], default-features = true }
+similar-asserts = { version = "=1.7.0", features = ["unicode"], default-features = true }
+siphasher = { version = "=0.3.11", features = ["std"], default-features = true }  # multiple versions in graph: 0.3.11, 1.0.1 (alias -> 0.3.11)
+slab = { version = "0.4.10", features = ["std"], default-features = true }
+slog = { version = "=2.7.0", features = ["erased-serde", "max_level_trace", "nested-values", "std"], default-features = true }
+slog-term = { version = "=2.9.1", features = [], default-features = false }
+slotmap = { version = "=1.0.7", features = ["std"], default-features = true }
+slug = { version = "=0.1.6", features = [], default-features = false }
+smallvec = { version = "=1.15.1", features = ["bincode", "const_generics", "impl_bincode", "serde", "specialization", "union", "unty"], default-features = false }
+socket2 = { version = "=0.5.10", features = ["all"], default-features = false }
+spin = { version = "=0.10.0", features = ["mutex", "rwlock", "spin_mutex", "std"], default-features = false }  # multiple versions in graph: 0.10.0, 0.5.2, 0.9.8 (alias -> 0.10.0)
+starlark = { git = "https://github.com/facebook/starlark-rust.git", rev = "3ee0405eb6c4eb3a9c18c05a4a01c71fa43eb258" }
+static_assertions = { version = "=1.1.0", features = [], default-features = false }
+strsim = { version = "=0.10.0", features = [], default-features = false }  # multiple versions in graph: 0.10.0, 0.11.1, 0.8.0, 0.9.3 (alias -> 0.10.0)
+structopt = { version = "=0.3.26", features = [], default-features = true }
+strum = { version = "=0.27.1", features = ["derive", "strum_macros"], default-features = false }  # multiple versions in graph: 0.26.3, 0.27.1 (alias -> 0.27.1)
+subtle = { version = "=2.6.1", features = ["i128", "std"], default-features = true }
+sval = { version = "=2.14.1", features = [], default-features = false }
+syn = { version = "=2.0.103", features = ["clone-impls", "derive", "extra-traits", "fold", "full", "parsing", "printing", "proc-macro", "visit", "visit-mut"], default-features = true }  # multiple versions in graph: 1.0.109, 2.0.103 (alias -> 2.0.103)
+syn1 = { package = "syn", version = "=1.0.109", features = ["clone-impls", "derive", "extra-traits", "fold", "full", "parsing", "printing", "proc-macro", "quote", "visit", "visit-mut"], default-features = true }
+synstructure = { version = "=0.12.6", features = ["proc-macro"], default-features = true }  # multiple versions in graph: 0.12.6, 0.13.2 (alias -> 0.12.6)
+tar = { version = "=0.4.44", features = ["xattr"], default-features = true }
+tempfile = { version = "=3.20.0", features = ["getrandom"], default-features = true }
+tera = { version = "=1.20.0", features = ["builtins", "chrono", "chrono-tz", "humansize", "percent-encoding", "rand", "slug", "urlencode"], default-features = true }
+term_size = { version = "=0.3.2", features = [], default-features = true }
+termcolor = { version = "=1.4.1", features = [], default-features = false }
+terminal_size = { version = "=0.4.2", features = [], default-features = false }
+textwrap = { version = "=0.16.2", features = ["smawk", "terminal_size", "unicode-linebreak", "unicode-width"], default-features = true }  # multiple versions in graph: 0.11.0, 0.16.2 (alias -> 0.16.2)
+thiserror = { version = "=2.0.12", features = ["std"], default-features = true }  # multiple versions in graph: 1.0.69, 2.0.12 (alias -> 2.0.12)
+thread_local = { version = "=1.1.9", features = [], default-features = false }
+time = { version = "=0.3.41", features = ["alloc", "formatting", "macros", "parsing", "std"], default-features = true }
+tiny-keccak = { version = "=2.0.2", features = ["sha3"], default-features = true }
+tokio = { version = "=1.45.1", features = ["bytes", "fs", "full", "io-std", "io-util", "libc", "macros", "mio", "net", "parking_lot", "process", "rt", "rt-multi-thread", "signal", "signal-hook-registry", "socket2", "sync", "test-util", "time", "tokio-macros", "tracing", "windows-sys"], default-features = true }
+tokio-rustls = { version = "=0.24.1", features = ["dangerous_configuration", "logging", "tls12"], default-features = true }
+tokio-util = { version = "=0.7.15", features = ["codec", "compat", "full", "futures-io", "futures-util", "hashbrown", "io", "io-util", "net", "rt", "slab", "time"], default-features = true }
+toml = { version = "=0.8.23", features = ["display", "parse"], default-features = true }
+toml_edit = { version = "=0.22.27", features = ["display", "parse", "serde"], default-features = true }
+tower-service = { version = "=0.3.3", features = [], default-features = false }
+tracing = { version = "=0.1.41", features = ["attributes", "std", "tracing-attributes", "valuable"], default-features = false }
+tracing-core = { version = "=0.1.34", features = ["once_cell", "std", "valuable"], default-features = true }
+tracing-glog = { version = "=0.4.0", features = ["ansi", "nu-ansi-term", "tracing-log"], default-features = true }
+tracing-log = { version = "=0.2.0", features = ["log-tracer", "std"], default-features = true }
+tracing-serde = { version = "=0.1.3", features = [], default-features = false }
+tracing-subscriber = { version = "=0.3.19", features = ["alloc", "ansi", "chrono", "env-filter", "fmt", "matchers", "nu-ansi-term", "once_cell", "regex", "registry", "sharded-slab", "smallvec", "std", "thread_local", "tracing", "tracing-log"], default-features = true }
+tracing-test = { version = "=0.2.5", features = ["no-env-filter"], default-features = false }
+triomphe = { version = "=0.1.14", features = ["serde", "stable_deref_trait", "std"], default-features = true }
+twox-hash = { version = "=1.6.3", features = ["rand", "std"], default-features = true }
+typed-builder = { version = "=0.20.1", features = [], default-features = false }
+typenum = { version = "=1.18.0", features = ["force_unix_path_separator"], default-features = false }
+typetag = { version = "=0.2.20", features = [], default-features = false }
+unicase = { version = "=2.8.1", features = [], default-features = false }
+unicode-ident = { version = "=1.0.18", features = [], default-features = false }
+unicode-segmentation = { version = "=1.12.0", features = [], default-features = false }
+unicode-width = { version = "=0.1.12", features = [], default-features = true }  # multiple versions in graph: 0.1.12, 0.2.1 (alias -> 0.1.12)
+url = { version = "=2.5.4", features = ["serde", "std"], default-features = true }
+uuid = { version = "=1.17.0", features = ["atomic", "rng", "serde", "sha1", "std", "v4", "v5", "v6", "v7", "v8"], default-features = true }
+valuable = { version = "=0.1.1", features = ["alloc", "derive", "std", "valuable-derive"], default-features = true }
+vec_map = { version = "=0.8.2", features = [], default-features = false }
+wait-timeout = { version = "=0.2.1", features = [], default-features = false }
+walkdir = { version = "=2.5.0", features = [], default-features = false }
+webpki-roots = { version = "=0.22.6", features = [], default-features = false }  # multiple versions in graph: 0.22.6, 0.25.4 (alias -> 0.22.6)
+which = { version = "=4.4.2", features = [], default-features = false }
+whoami = { version = "=1.6.0", features = ["web", "web-sys"], default-features = true }
+winnow = { version = "=0.7.11", features = ["alloc", "std"], default-features = true }
+xattr = { version = "=1.5.0", features = ["unsupported"], default-features = true }
+yansi = { version = "=1.0.1", features = ["alloc", "hyperlink", "std"], default-features = true }
+zerocopy = { version = "=0.8.26", features = ["derive", "simd", "zerocopy-derive"], default-features = false }
+zeroize = { version = "=1.8.1", features = ["simd"], default-features = false }
+zstd = { version = "=0.13.3", features = ["arrays", "legacy", "zdict_builder", "zstdmt"], default-features = true }
+zstd-safe = { version = "=7.2.4", features = ["arrays", "legacy", "std", "zdict_builder", "zstdmt"], default-features = true }
+

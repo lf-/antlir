@@ -49,7 +49,11 @@ system_python_bootstrap_toolchain(
 # generated third-party/rust/BUCK.
 bootstrap_rust_toolchain(
     name = "rust",
-    default_edition = "2021",
+    # antlir first-party crates use edition 2024 (let-chains, etc.; their
+    # autocargo Cargo.tomls declare `edition = "2024"`). Third-party crates set
+    # their own edition per-target in the reindeer-generated BUCK, so this
+    # default only governs first-party targets that don't set one explicitly.
+    default_edition = "2024",
     visibility = ["PUBLIC"],
 )
 

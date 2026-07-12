@@ -1,0 +1,4 @@
+# smallvec's `specialization` feature enables #![feature(specialization)] and
+# specialized SpecFrom impls; rustc 1.96.1 rejects the specialization (same
+# class as hashbrown's `nightly`), and RUSTC_BOOTSTRAP can't fix it. Drop it.
+omit_features = ["specialization"]

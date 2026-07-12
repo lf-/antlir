@@ -29,3 +29,10 @@
 
 [build]
     execution_platforms = antlir//platforms:host
+
+[http]
+    # crates.io downloads time out at the default 5s under buck2's ~150-way
+    # concurrent burst in this bandwidth-limited sandbox. Raise generously.
+    connect_timeout_ms = 60000
+    read_timeout_ms = 60000
+    write_timeout_ms = 60000

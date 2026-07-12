@@ -1,0 +1,5 @@
+# bytemuck's nightly_portable_simd / nightly_stdsimd reference the old
+# core::simd::{LaneCount,SupportedLaneCount} API, which rustc 1.96.1's std no
+# longer exposes. RUSTC_BOOTSTRAP opens the feature gate but can't restore the
+# removed API, so drop these nightly features (like hashbrown's `nightly`).
+omit_features = ["nightly_portable_simd", "nightly_stdsimd"]
