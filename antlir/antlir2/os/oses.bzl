@@ -90,19 +90,25 @@ OSES = [
     ),
     _new_os(
         name = "centos9",
-        build_appliance = select({
-            "DEFAULT": "antlir//antlir/antlir2/facebook/images/build_appliance/centos9:build-appliance",
-            "antlir//antlir/antlir2/facebook/flavor/centos9:corp": "antlir//antlir/antlir2/facebook/images/build_appliance/centos9_corp:build-appliance",
-        }),
+        build_appliance = internal_external(
+            fb = select({
+                "DEFAULT": "antlir//antlir/antlir2/facebook/images/build_appliance/centos9:build-appliance",
+                "antlir//antlir/antlir2/facebook/flavor/centos9:corp": "antlir//antlir/antlir2/facebook/images/build_appliance/centos9_corp:build-appliance",
+            }),
+            oss = "//flavor/centos9:build-appliance",
+        ),
         # This points to the Meta-built third-party/python interpreter.
         python = new_python_t(interpreter = "/usr/local/bin/python3.12"),
     ),
     _new_os(
         name = "centos10",
-        build_appliance = select({
-            "DEFAULT": "antlir//antlir/antlir2/facebook/images/build_appliance/centos10:build-appliance",
-            "antlir//antlir/antlir2/facebook/flavor/centos10:corp": "antlir//antlir/antlir2/facebook/images/build_appliance/centos10_corp:build-appliance",
-        }),
+        build_appliance = internal_external(
+            fb = select({
+                "DEFAULT": "antlir//antlir/antlir2/facebook/images/build_appliance/centos10:build-appliance",
+                "antlir//antlir/antlir2/facebook/flavor/centos10:corp": "antlir//antlir/antlir2/facebook/images/build_appliance/centos10_corp:build-appliance",
+            }),
+            oss = "//flavor/centos10:build-appliance",
+        ),
         # TODO(T238134086): This should point to the third-party/python interpreter when we've verified this correctness.
         python = new_python_t(interpreter = "/usr/bin/python3"),
     ),

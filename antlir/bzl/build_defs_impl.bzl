@@ -160,6 +160,10 @@ def _python_library(**kwargs):
     _wrap_internal(native.python_library, [], kwargs)
 
 def _python_binary(*, name: str, main_function: str | None = None, main_module: str | None = None, **kwargs):
+    # `package_style` is a binary-only attribute; it must not be forwarded to
+    # the underlying python_library (the OSS prelude rejects unknown kwargs).
+    package_style = kwargs.pop("package_style", None)
+
     _python_library(name = name + "-library", **kwargs)
 
     _wrap_internal(
@@ -170,6 +174,7 @@ def _python_binary(*, name: str, main_function: str | None = None, main_module: 
             "main_function": main_function,
             "main_module": main_module,
             "name": name,
+            "package_style": package_style,
         },
     )
 

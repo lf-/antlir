@@ -1,11 +1,22 @@
-load("@prelude//platforms:defs.bzl", "execution_platform", "host_configuration")
+load("@prelude//platforms:defs.bzl", "host_configuration")
+load(":defs.bzl", "execution_platform")
 
 oncall("antlir_oss")
 
+# antlir's own rules (the `flavor` macro, and anything built via
+# `rule_with_default_target_platform(local_only_exec = True)`) set
+# `exec_compatible_with = ["prelude//platforms:may_run_local"]`. The prelude
+# `execution_platform` rule only unions the cpu + os ConfigurationInfos, so
+# without the `may_run_local` marker here NO execution platform satisfies those
+# exec_deps and every image layer's exec_deps fall into `<unspecified_exec>`.
 execution_platform(
     name = "host",
-    cpu_configuration = host_configuration.cpu,
-    os_configuration = host_configuration.os,
+    configurations = [
+        host_configuration.cpu,
+        host_configuration.os,
+        "prelude//platforms:may_run_local",
+        "prelude//platforms:may_run_remote",
+    ],
     use_windows_path_separators = host_info().os.is_windows,
     visibility = ["PUBLIC"],
 )

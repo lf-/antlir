@@ -35,22 +35,21 @@ transition_to_distro_platform = enum("no", "yes", "yes-without-rpm-deps")
 _transition_to_distro_platform_enum = transition_to_distro_platform
 
 def install(
-    *,
-    src: str | Select,
-    dst: str | Select,
-    mode: int | str | Select | None = None,
-    user: str | int | Select = "root",
-    group: str | int | Select = "root",
-    xattrs: dict[str, str] | Select = {},
-    never_use_dev_binary_symlink: bool | Select = False,
-    split_debuginfo: bool | Select = True,
-    strip_all: bool = False,
-    always_use_gnu_debuglink: bool = False,
-    setcap: str | None = None,
-    default_permissions: default_permissions = default_permissions(),
-    ignore_symlink_tree: bool | Select = False,
-    transition_to_distro_platform: transition_to_distro_platform | str | bool = False,
-):
+        *,
+        src: str | Select,
+        dst: str | Select,
+        mode: int | str | Select | None = None,
+        user: str | int | Select = "root",
+        group: str | int | Select = "root",
+        xattrs: dict[str, str] | Select = {},
+        never_use_dev_binary_symlink: bool | Select = False,
+        split_debuginfo: bool | Select = True,
+        strip_all: bool = False,
+        always_use_gnu_debuglink: bool = False,
+        setcap: str | None = None,
+        default_permissions: default_permissions = default_permissions(),
+        ignore_symlink_tree: bool | Select = False,
+        transition_to_distro_platform: transition_to_distro_platform | str | bool = False):
     """
     Install a file or directory into the image.
 
@@ -115,13 +114,24 @@ def install(
         )
 
     exec_deps = {
-        "_debuginfo_splitter": "fbcode//antlir/antlir2/tools:debuginfo-splitter",
-        "_mac_signer": "fbcode//python/runtime/tools:recursive_mac_signer",
+        # NB: the `antlir` cell root is the same as fbcode's `antlir` subtree, so
+        # `antlir//antlir/antlir2/tools` resolves to the same target internally
+        # and in OSS (unlike the `fbcode//` cell, which is unavailable in OSS).
+        "_debuginfo_splitter": "antlir//antlir/antlir2/tools:debuginfo-splitter",
         "_objcopy": internal_external(
             fb = "fbsource//third-party/binutils:objcopy",
             oss = "toolchains//:objcopy",
         ),
     }
+
+    # The recursive mac signer only exists internally and is only consumed when
+    # building for macOS; leave it unset in OSS (the rule attr defaults to None).
+    _mac_signer = internal_external(
+        fb = "fbcode//python/runtime/tools:recursive_mac_signer",
+        oss = None,
+    )
+    if _mac_signer:
+        exec_deps["_mac_signer"] = _mac_signer
     deps = {}
     deps_or_srcs = {}
     distro_platform_deps = {}
@@ -186,14 +196,13 @@ def install(
     )
 
 def install_text(
-    *,
-    text: str | Select,
-    dst: str | Select,
-    mode: int | str | Select | None = None,
-    user: str | int | Select = "root",
-    group: str | int | Select = "root",
-    xattrs: dict[str, str] | Select = {},
-):
+        *,
+        text: str | Select,
+        dst: str | Select,
+        mode: int | str | Select | None = None,
+        user: str | int | Select = "root",
+        group: str | int | Select = "root",
+        xattrs: dict[str, str] | Select = {}):
     # the default mode is determined later, after we know if the thing being
     # installed is a binary or not
     mode = stat.mode(mode) if mode != None else None
@@ -241,14 +250,13 @@ implicit_resources_record = record(
 )
 
 def _python_outplace_features(
-    ctx: AnalysisContext,
-    installed_name: str,
-    mode: int,
-    binary_info: binary_record | None,
-    shared_libraries: shared_libraries_record | None,
-    required_artifacts: list[Artifact],
-    required_run_infos: list[RunInfo],
-):
+        ctx: AnalysisContext,
+        installed_name: str,
+        mode: int,
+        binary_info: binary_record | None,
+        shared_libraries: shared_libraries_record | None,
+        required_artifacts: list[Artifact],
+        required_run_infos: list[RunInfo]):
     # "outplace" is like "inplace" but generates a PAR with copied files instead of linked.
     # antlir needs this because otherwise the chroot ends up with a bunch of broken symlinks.
     par = ctx.attrs.src[DefaultInfo].sub_targets["outplace"]
@@ -332,8 +340,8 @@ def _python_outplace_features(
                 "/usr/local/libexec",
                 "/usr/local/libexec/python_outplace",
             ]
-        ]
-        + [
+        ] +
+        [
             FeatureAnalysis(
                 feature_type = "ensure_file_symlink",
                 data = struct(
@@ -405,7 +413,7 @@ def _impl(ctx: AnalysisContext) -> list[Provider] | Promise:
                     shared_library_record(
                         soname = soname,
                         target = so_out,
-                    )
+                    ),
                 )
                 required_artifacts.append(so_out)
 

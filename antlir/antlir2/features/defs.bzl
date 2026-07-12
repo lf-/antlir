@@ -12,11 +12,11 @@ load(
 load("@prelude//rust:link_info.bzl", "RustLinkInfo")
 load("@prelude//utils:selects.bzl", "selects")
 load("//antlir/antlir2/bzl:platform.bzl", "rule_with_default_target_platform")
+
 # @oss-disable[end= ]: load("//antlir/antlir2/facebook:deps_test.bzl", "blocklist_deps_test")
 load("//antlir/buck2/bzl:ensure_single_output.bzl", "ensure_single_output")
 load("//antlir/bzl:build_defs.bzl", "rust_library")
-load("//antlir/bzl:oss_shim.bzl", blocklist_deps_test = "ret_none") # @oss-enable
-
+load("//antlir/bzl:oss_shim.bzl", blocklist_deps_test = "ret_none")  # @oss-enable
 load("//antlir/bzl:target_helpers.bzl", "normalize_target")
 
 FeaturePluginPluginKind = plugins.kind()
@@ -25,7 +25,7 @@ FeaturePluginInfo = provider(
     fields = [
         "plugin",
         "libs",
-    ]
+    ],
 )
 
 def _impl(ctx: AnalysisContext) -> list[Provider]:
@@ -54,33 +54,32 @@ def _impl(ctx: AnalysisContext) -> list[Provider]:
 _feature_plugin = rule(
     impl = _impl,
     attrs = {
-        "lib": attrs.dep(providers = [RustLinkInfo]),
+        "lib": attrs.exec_dep(providers = [RustLinkInfo]),
     },
 )
 
 feature_plugin = rule_with_default_target_platform(_feature_plugin)
 
 def feature_impl(
-    *,
-    name: str,
-    src: str | None = None,
-    extra_srcs: list[str] = [],
-    deps: list[str] | Select = [],
-    resources: dict[str, str | Select] | Select | None = None,
-    unstable_features: list[str] = [],
-    allow_unused_crate_dependencies: bool = False,
-    lib_visibility: list[str] | None = None,
-    plugin_visibility: list[str] | None = None,
-    visibility: list[str] | None = None,
-    rustc_flags: list[str] | Select | None = [],
-    features: list[str] | Select | None = [],
-    test_srcs: list[str] | Select | None = [],
-    test_deps: list[str] | Select | None = [],
-):
+        *,
+        name: str,
+        src: str | None = None,
+        extra_srcs: list[str] = [],
+        deps: list[str] | Select = [],
+        resources: dict[str, str | Select] | Select | None = None,
+        unstable_features: list[str] = [],
+        allow_unused_crate_dependencies: bool = False,
+        lib_visibility: list[str] | None = None,
+        plugin_visibility: list[str] | None = None,
+        visibility: list[str] | None = None,
+        rustc_flags: list[str] | Select | None = [],
+        features: list[str] | Select | None = [],
+        test_srcs: list[str] | Select | None = [],
+        test_deps: list[str] | Select | None = []):
     lib_visibility = (
-        lib_visibility
-        or visibility
-        or [
+        lib_visibility or
+        visibility or
+        [
             "//antlir/antlir2/...",
             "//metalos/os/facebook/classic/flavor/...",
             "//tupperware/cm/antlir2/...",
@@ -98,8 +97,8 @@ def feature_impl(
         deps = selects.apply(
             deps or [],
             lambda deps: (
-                deps
-                + [
+                deps +
+                [
                     "serde",
                     "tracing",
                     "//antlir/antlir2/antlir2_compile:antlir2_compile",
