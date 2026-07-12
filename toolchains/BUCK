@@ -10,12 +10,16 @@ load("@prelude//toolchains:cxx.bzl", "system_cxx_toolchain")
 load("@prelude//toolchains:genrule.bzl", "system_genrule_toolchain")
 load("@prelude//toolchains:python.bzl", "system_python_bootstrap_toolchain", "system_python_toolchain")
 load("@prelude//toolchains:remote_test_execution.bzl", "remote_test_execution_toolchain")
-load("@prelude//toolchains:rust.bzl", "system_rust_toolchain")
+
+# system_rust_toolchain doesn't expose rustc_env, so we use a local near-clone
+# that sets RUSTC_BOOTSTRAP=1 (see :rust below).
+load(":rust_bootstrap.bzl", "bootstrap_rust_toolchain")
 
 """
 All the default toolchains, suitable for a quick demo or early prototyping.
 Most real projects should copy/paste the implementation to configure them.
 """
+
 system_cxx_toolchain(
     name = "cxx",
     cxx_flags = [
@@ -39,7 +43,11 @@ system_python_bootstrap_toolchain(
     visibility = ["PUBLIC"],
 )
 
-system_rust_toolchain(
+# RUSTC_BOOTSTRAP=1 (set inside bootstrap_rust_toolchain) opens nightly
+# `#![feature(...)]` gates that many third-party crates request via cargo
+# features, so we don't have to hand-strip those features out of the reindeer-
+# generated third-party/rust/BUCK.
+bootstrap_rust_toolchain(
     name = "rust",
     default_edition = "2021",
     visibility = ["PUBLIC"],

@@ -1,0 +1,61 @@
+load("//antlir/antlir2/bzl/flavor:defs.bzl", "flavor")
+load("//antlir/antlir2/bzl/image:build_appliance.bzl", "build_appliance")
+load("//antlir/antlir2/bzl/image:defs.bzl", "image")
+load("//antlir/antlir2/bzl/package:defs.bzl", "package")
+load("//antlir/bzl:build_defs.bzl", "buck_genrule", "export_file")
+
+flavor(
+    name = "fedora44",
+    # Unlike centos{9,10}, we deliberately do NOT bake a `generated//` RPM
+    # snapshot in as the default repo set (that cell is huge, x86_64-only, and
+    # absent in OSS -- see BUGS.md #5). Images pull Fedora repos explicitly via
+    # `dnf_additional_repos` (live mirror or a local snapshot).
+    default_dnf_repo_set = "//antlir/antlir2/flavor:empty-repo-set",
+    default_dnf_versionlock = "//antlir/antlir2/package_managers/dnf/build_appliance:empty-dnf-versionlock.json",
+    visibility = ["PUBLIC"],
+)
+
+# The build appliance tarball is bootstrapped locally by
+# flavor/bootstrap/build_appliance.py (there is no Meta S3 artifact for Fedora,
+# let alone aarch64). It is .gitignore'd; drop the produced tarball here, or
+# repoint this at wherever you host it (an `http_file` works too). See
+# flavor/bootstrap/README.md.
+export_file(
+    name = "build-appliance.tar.zst",
+    src = "build-appliance.tar.zst",
+)
+
+build_appliance(
+    name = "build-appliance.prebuilt",
+    src = ":build-appliance.tar.zst",
+    visibility = [
+        "antlir//antlir/antlir2/flavor:none",
+    ],
+)
+
+image.layer(
+    name = "build-appliance",
+    build_appliance = ":build-appliance.prebuilt",
+    # Pin to the fedora44 flavor (empty repo set). Without this the layer
+    # inherits the repo-wide default OS (centos9), whose flavor hard-depends on
+    # the huge `generated//` RPM snapshot cell -- see BUGS.md #5. The explicit
+    # build_appliance above (the bootstrapped seed) breaks the would-be cycle,
+    # exactly as centos9's own BA layer relies on an explicit prebuilt.
+    default_os = "fedora44",
+    features = [
+        "//antlir/antlir2/build_appliance:features",
+    ],
+)
+
+package.unprivileged_dir(
+    name = "build-appliance.dir",
+    layer = ":build-appliance",
+)
+
+buck_genrule(
+    name = "build-appliance.impl.tar.zst",
+    cmd = """
+        tar -cf $TMP/ba.tar -C $(location :build-appliance.dir) .
+        zstd $TMP/ba.tar -o $OUT
+    """,
+)

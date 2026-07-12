@@ -39,6 +39,15 @@ os_version(
 )
 
 os_version(
+    name = "fedora44",
+    family = "//antlir/antlir2/os/family:family[fedora]",
+    # antlir2's rpm driver (antlir2_dnf_base.py) uses the dnf4 python API, which
+    # Fedora still ships as the python3-dnf compat stack. Use it rather than
+    # dnf5 until there's a proven OSS dnf5 driver.
+    package_manager = "//antlir/antlir2/os/package_manager:package_manager[dnf]",
+)
+
+os_version(
     name = "rhel8",
     family = "//antlir/antlir2/os/family:family[rhel]",
     package_manager = "//antlir/antlir2/os/package_manager:package_manager[dnf]",

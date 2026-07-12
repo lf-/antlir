@@ -172,6 +172,20 @@ else:
         ),
     )
 
+    # OSS-only Fedora bring-up. Unlike the CentOS entries, the build appliance
+    # is bootstrapped locally (see flavor/bootstrap/) rather than pulled from
+    # Meta's S3, so this works on aarch64 too. No system toolchain yet (matches
+    # eln/debian-trixie) -- this is the "install RPMs into images" path.
+    OSES.append(
+        _new_os(
+            name = "fedora44",
+            architectures = [new_arch_t("x86_64"), new_arch_t("aarch64")],
+            has_platform_toolchain = False,
+            # the BA ships /usr/bin/python3 (the dnf4 python driver interpreter)
+            python = new_python_t(interpreter = "/usr/bin/python3"),
+        ),
+    )
+
 # Syntax `tuple[str, ...]` is erroneously declared invalid
 # @lint-ignore BUCKFORMAT
 def _at_least_centos(release: int) -> tuple[str, ...]:

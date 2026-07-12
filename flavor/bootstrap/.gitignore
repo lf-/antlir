@@ -1,0 +1,2 @@
+# bootstrapped build-appliance artifacts (host these externally, do not commit)
+*.tar.zst

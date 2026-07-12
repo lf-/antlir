@@ -19,10 +19,13 @@
     target_platform_detector_spec = target:antlir//...->prelude//platforms:default
 
 [project]
-    ignore = antlir2-out, .git, .sl
+    ignore = antlir2-out, .git, .sl, .claude-persist
 
 [buck2]
-    file_watcher = watchman
+    # watchman is not installed in this sandbox; the notify (inotify) fallback
+    # works now that fs.inotify.max_user_watches is raised and we avoid the
+    # huge `generated` cell (fedora44 uses an empty repo set).
+    file_watcher = notify
 
 [build]
     execution_platforms = antlir//platforms:host

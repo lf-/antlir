@@ -1,0 +1,10 @@
+load(":defs.bzl", "to_current_distro_platform")
+
+oncall("antlir")
+
+# See defs.bzl: OSS identity stub for the distro-platform transition referenced
+# by feature.bzl's `distro_platform_deps` attribute.
+to_current_distro_platform(
+    name = "to-current-distro-platform",
+    visibility = ["PUBLIC"],
+)
