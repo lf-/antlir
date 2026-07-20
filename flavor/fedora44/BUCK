@@ -1,3 +1,4 @@
+load("//antlir/antlir2/build_appliance:defs.bzl", "build_appliance_from_dir")
 load("//antlir/antlir2/bzl/flavor:defs.bzl", "flavor")
 load("//antlir/antlir2/bzl/image:build_appliance.bzl", "build_appliance")
 load("//antlir/antlir2/bzl/image:defs.bzl", "image")
@@ -65,6 +66,10 @@ buck_genrule(
 
 build_appliance(
     name = "build-appliance.prebuilt",
+    # NOT `:build-appliance.tar.zst` -- that alias resolves to an `http_file`,
+    # i.e. the literal tarball. centos9/10 get away with pointing `src` at their
+    # `.tar.zst` target only because theirs is an `http_archive`, which buck
+    # extracts for them. See the note on `:build-appliance.rootfs` above.
     src = ":build-appliance.rootfs",
     visibility = [
         "antlir//antlir/antlir2/flavor:none",
@@ -72,7 +77,7 @@ build_appliance(
 )
 
 image.layer(
-    name = "build-appliance",
+    name = "build-appliance.layer",
     build_appliance = ":build-appliance.prebuilt",
     # Pin to the fedora44 flavor (empty repo set). Without this the layer
     # inherits the repo-wide default OS (centos9), whose flavor hard-depends on
@@ -95,7 +100,23 @@ image.layer(
 
 package.unprivileged_dir(
     name = "build-appliance.dir",
-    layer = ":build-appliance",
+    # Must be explicit: the default for this attr is the OS-selected build
+    # appliance, which for fedora44 is `:build-appliance` -- i.e. this target's
+    # own consumer, a target-graph cycle. The bootstrapped seed breaks it.
+    build_appliance = ":build-appliance.prebuilt",
+    layer = ":build-appliance.layer",
+)
+
+# THIS is what `OSES[].build_appliance` must point at. An `image.layer` only
+# provides LayerInfo; the `build_appliance` attr is an `attrs.exec_dep(providers
+# = [BuildApplianceInfo])`, and layers stopped providing BuildApplianceInfo in
+# D55970042 ("untangling of layers and build appliances"). Matches the shape of
+# the fb-internal `images/build_appliance/<os>:build-appliance` targets and of
+# `antlir2_packager:packager-appliance.impl`.
+build_appliance_from_dir(
+    name = "build-appliance",
+    dir = ":build-appliance.dir",
+    visibility = ["PUBLIC"],
 )
 
 buck_genrule(
