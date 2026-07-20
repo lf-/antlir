@@ -1,0 +1,8 @@
+# The heavy artifacts live in object storage, keyed by sha256, and are fetched
+# (and sha-verified) by buck2 at build time. Committing them would grow this
+# repo by ~16 KB/package *per import*, forever; the generated BUCK is
+# ~84 B/package and deltas well. See README.md.
+*.rpm
+xml/
+repodata/
+upload.json
