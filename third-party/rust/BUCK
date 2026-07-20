@@ -8510,6 +8510,11 @@ cargo.rust_library(
     crate = "itertools",
     crate_root = "itertools-0.14.0.crate/src/lib.rs",
     edition = "2018",
+    features = [
+        "default",
+        "use_alloc",
+        "use_std",
+    ],
     visibility = [],
     deps = [":either-1"],
 )

@@ -134,7 +134,7 @@ indenter = { version = "=0.3.3", features = [], default-features = true }
 indexmap = { version = "=2.9.0", features = ["arbitrary", "rayon", "serde", "std"], default-features = true }
 indoc = { version = "=2.0.6", features = [], default-features = false }
 inventory = { version = "=0.3.20", features = [], default-features = false }
-itertools = { version = "=0.14.0", features = [], default-features = false }  # multiple versions in graph: 0.10.5, 0.12.1, 0.13.0, 0.14.0 (alias -> 0.14.0)
+itertools = { version = "=0.14.0", features = ["use_alloc", "use_std"], default-features = true }  # multiple versions in graph: 0.10.5, 0.12.1, 0.13.0, 0.14.0 (alias -> 0.14.0). Needs use_alloc: Itertools::join et al are #[cfg(feature = "use_alloc")], and this is the version the `itertools` alias (i.e. all first-party deps) resolves to.
 jwalk = { version = "=0.6.2", features = [], default-features = false }
 lalrpop = { version = "=0.19.12", features = ["lexer", "pico-args"], default-features = true }
 lalrpop-util = { version = "=0.19.12", features = ["lexer", "regex", "std"], default-features = true }
