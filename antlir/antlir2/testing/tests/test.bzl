@@ -25,7 +25,7 @@ def test_variants(*, test_rule, lang: str, layer: str = ":base", **kwargs):
         (True, False),
         internal_external(
             fb = ("centos9", "centos10"),
-            oss = ("centos9",),
+            oss = ("fedora44",),
         ),
     ):
         name_parts = (

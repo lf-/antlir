@@ -15,7 +15,7 @@ OSES = internal_external(
         "centos9",
         "eln",
     ],
-    oss = ["centos9"],
+    oss = ["fedora44"],
 )
 
 # This single-constraint select is useful to ensure that we can select on an ROU
@@ -123,6 +123,7 @@ image.layer(
                     text = select({
                         "//antlir/antlir2/os:centos9": "centos9",
                         "//antlir/antlir2/os:eln": "eln",
+                        "//antlir/antlir2/os:fedora44": "fedora44",
                         "DEFAULT": "default",
                     }),
                 ),
@@ -149,6 +150,7 @@ image.layer(
             version = select({
                 "//antlir/antlir2/os:centos9": "centos9",
                 "//antlir/antlir2/os:eln": "eln",
+                "//antlir/antlir2/os:fedora44": "fedora44",
                 "DEFAULT": "default",
             }),
             visibility = [],
@@ -164,6 +166,7 @@ image.layer(
             version = select({
                 "//antlir/antlir2/os:centos9": "centos9",
                 "//antlir/antlir2/os:eln": "eln",
+                "//antlir/antlir2/os:fedora44": "fedora44",
                 "DEFAULT": "default",
             }),
             visibility = [],

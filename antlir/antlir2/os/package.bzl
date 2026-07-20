@@ -20,4 +20,4 @@ def set_default_os_for_package(*, default_os: str):
     write_package_value(_DEFAULT_OS_KEY, default_os, overwrite = True)
 
 def get_default_os_for_package() -> str:
-    return read_package_value(_DEFAULT_OS_KEY) or "centos9"
+    return read_package_value(_DEFAULT_OS_KEY) or "fedora44"
