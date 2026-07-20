@@ -1,3 +1,4 @@
+load("//antlir/antlir2/build_appliance:defs.bzl", "build_appliance_from_dir")
 load("//antlir/antlir2/bzl/flavor:defs.bzl", "flavor")
 load("//antlir/bzl:build_defs.bzl", "buck_genrule", "http_file")
 load("//antlir/antlir2/bzl/image:defs.bzl", "image")
@@ -33,7 +34,7 @@ build_appliance(
 )
 
 image.layer(
-    name = "build-appliance",
+    name = "build-appliance.layer",
     build_appliance = ":build-appliance.prebuilt",
     features = [
         "//antlir/antlir2/build_appliance:features",
@@ -42,7 +43,21 @@ image.layer(
 
 package.unprivileged_dir(
     name = "build-appliance.dir",
-    layer = ":build-appliance",
+    # Must be explicit: the default for this attr is the OS-selected build
+    # appliance, which for centos10 is `:build-appliance` -- i.e. this target's
+    # own consumer, a target-graph cycle. The prebuilt seed breaks it.
+    build_appliance = ":build-appliance.prebuilt",
+    layer = ":build-appliance.layer",
+)
+
+# THIS is what `OSES[].build_appliance` must point at. An `image.layer` only
+# provides LayerInfo; the `build_appliance` attr is an `attrs.exec_dep(providers
+# = [BuildApplianceInfo])`, and layers stopped providing BuildApplianceInfo in
+# D55970042 ("untangling of layers and build appliances").
+build_appliance_from_dir(
+    name = "build-appliance",
+    dir = ":build-appliance.dir",
+    visibility = ["PUBLIC"],
 )
 
 buck_genrule(
