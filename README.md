@@ -38,31 +38,36 @@ under content-addressed keys makes the snapshot reproducible indefinitely.
 
 ## Re-importing
 
-The generator lives in the **main** repo at `flavor/fedora44/gen_buck.py` (it is
-source, not artifact). It needs `createrepo_c` — see the WHY in its docstring —
-which is why the import runs in CI, not on the build host.
+The generator lives in the **main** repo at `flavor/fedora44/import_snapshot.py`
+(it is source, not artifact). The arches to snapshot and the packages to fetch
+are declared in `flavor/fedora44/config.toml`, so a re-import is config-driven
+and needs no arguments. `build` needs `createrepo_c` — see the WHY in its
+docstring — which is why the import runs in CI, not on the build host.
 
 ```bash
-# 1. resolve the closure you want, into this directory
-dnf download --releasever=44 --resolve --alldeps \
-    --destdir=flavor/fedora44/repo \
-    dnf python3 python3-dnf python3-hawkey python3-libdnf python3-rpm util-linux-core
+# 1. fetch the closure named in config.toml (one dnf run per arch, --forcearch)
+./flavor/fedora44/import_snapshot.py download
 
-# 2. generate packages.json + xml chunks + upload.json
-./flavor/fedora44/import_snapshot.py --base-url https://<endpoint>/n/<ns>/b/<bucket>/o/
+# 2. generate packages.json + xml chunks + upload.json (base_url from config.toml)
+./flavor/fedora44/import_snapshot.py build
 
 # 3. upload the objects named in upload.json (needs write creds -> do this in
 #    CI, never in a build sandbox). Keys are content-addressed, so re-imports
 #    only push what is new: HEAD first and skip what exists.
+./flavor/fedora44/upload_snapshot.py --bucket ... --endpoint-url ...
 ```
 
-Add packages to step 1 as image features need them, then re-run step 2.
+Add packages to `config.toml` as image features need them (`[packages].include`
+for every arch, `[packages.<arch>].include` for arch-specific ones), then re-run
+steps 1–2. The exact per-arch `dnf` commands are recorded under `generated_by`
+in `packages.json`, so the provenance travels with the lockfile.
 
-Moving bucket/CDN/domain is a one-line edit: `base_url` appears exactly once, at
-the top of `packages.json`.
+Moving bucket/CDN/domain is a one-line edit: `base_url` lives in `config.toml`
+and is copied into the top of `packages.json`.
 
 ## Building without the bucket
 
-`gen_buck.py --local` emits local `rpm=`/`xml=` references instead of URLs, for
-offline or bootstrap builds. You need the `.rpm` files present; the xml chunks
-are regenerated for you. Handy before the first upload exists.
+`import_snapshot.py build --local` emits local `rpm=`/`xml=` references instead
+of URLs, for offline or bootstrap builds. You need the `.rpm` files present (run
+`download` first); the xml chunks are regenerated for you. Handy before the first
+upload exists.
